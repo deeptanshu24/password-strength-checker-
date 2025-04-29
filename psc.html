@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Checker & Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Password Strength Checker & Generator</h2>
+        <div class="input-container">
+            <input type="password" id="password" placeholder="Enter password" oninput="checkStrength()">
+            <button class="toggle-btn" onclick="togglePassword()">👁️</button>
+        </div>
+        <p class="strength" id="strengthOutput"></p>
+        <button onclick="generatePassword()">Generate Strong Password</button>
+        <p id="generatedPassword"></p>
+        <button class="copy-btn" id="copyButton" onclick="copyToClipboard()">Copy</button>
+    </div>
+
+    <script>
+        function checkStrength() {
+            const password = document.getElementById('password').value;
+            const strengthOutput = document.getElementById('strengthOutput');
+            const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            const mediumRegex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+            
+            if (password.length >= 12 && strongRegex.test(password)) {
+                strengthOutput.textContent = 'Very Strong';
+                strengthOutput.style.color = 'cyan';
+            } else if (strongRegex.test(password)) {
+                strengthOutput.textContent = 'Strong';
+                strengthOutput.style.color = 'lime';
+            } else if (mediumRegex.test(password)) {
+                strengthOutput.textContent = 'Medium';
+                strengthOutput.style.color = 'orange';
+            } else {
+                strengthOutput.textContent = 'Weak';
+                strengthOutput.style.color = 'red';
+            }
+        }
+        
+        function generatePassword() {
+            const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const lower = "abcdefghijklmnopqrstuvwxyz";
+            const numbers = "0123456789";
+            const symbols = "@$!%*?&";
+            const allChars = upper + lower + numbers + symbols;
+            let password = "";
+            
+            password += upper[Math.floor(Math.random() * upper.length)];
+            password += lower[Math.floor(Math.random() * lower.length)];
+            password += numbers[Math.floor(Math.random() * numbers.length)];
+            password += symbols[Math.floor(Math.random() * symbols.length)];
+            
+            for (let i = 4; i < 12; i++) {
+                password += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+            
+            document.getElementById('generatedPassword').textContent = `Generated Password: ${password}`;
+            document.getElementById('copyButton').style.display = 'block';
+        }
+
+        function copyToClipboard() {
+            const passwordText = document.getElementById('generatedPassword').textContent.replace("Generated Password: ", "");
+            navigator.clipboard.writeText(passwordText).then(() => {
+                alert("Password copied to clipboard!");
+            });
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+        }
+    </script>
+</body>
+</html>
